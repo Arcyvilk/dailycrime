@@ -31,37 +31,48 @@ export const guess = async (interaction: DiscordInteraction): Promise<void> => {
     return;
   }
 
-  const prompt = `${question} (Remember: answer [Y] for yes, [N] for no and [I] for invalid questions)`
-  const chatId = "f28d80ac-7fd6-4c1b-9233-e7d49cbbccaa"
-  const url = `http://localhost:8008/api/chat/${chatId}/question`
+  try {
+    await interaction.deferReply()
+    
+    const chatId = process.env.CHAT_ID
+    const prompt = `${question} (Remember: answer [Y] for yes, [N] for no and [I] for invalid questions)`
+    const url = `http://localhost:8008/api/chat/${chatId}/question`
 
-  await interaction.deferReply();
-  const response = await axios({
-    url,
-    method: 'GET',
-    headers: { responseType: 'stream', accept: "text/event-stream" },
-    params: { prompt }
-  })
-  const answer = parseAnswer(response)
-  const color = parseColor(answer)
+    const response = await axios({
+      url,
+      method: 'GET',
+      headers: { responseType: 'stream', accept: "text/event-stream" },
+      params: { prompt }
+    })
+    const answer = parseAnswer(response)
+    const color = parseColor(answer)
 
-  // Add the entire logic here
-  interaction.editReply({
-    embeds: [{
-      title: question,
-      color,
-      author: {
-        name: interaction.user.username,
-        icon_url: interaction.user.avatarURL() ?? ''
-      },
-      fields: [
-        {
+    interaction.editReply({
+      embeds: [{
+        title: question,
+        color,
+        author: {
+          name: interaction.user.username,
+          icon_url: interaction.user.avatarURL() ?? ''
+        },
+        fields: [{
           name: "Answer",
           value: answer
-        },
-      ],
-    }]
-  });
+        }],
+      }]
+    });
+  } catch (error) {
+    interaction.editReply({
+      embeds: [{
+        title: '❌ ERROR',
+        color: 15548997,
+        fields: [{
+          name: "---",
+          value: 'Something fucked up :C'
+        }]
+      }]
+    })
+  }
 };
 
 /**
@@ -71,7 +82,7 @@ const embedError: APIEmbed = {
   title: `❌ Incorrect command`,
   fields: [
     {
-      name: "___",
+      name: "---",
       value: "You have to ask a question."
     },
   ],
