@@ -42,4 +42,4 @@ User will be asking you questions about this story now!
 
 ## Other important notes
 
-Be as specific in the provided story as possible. The story above was recreated several times to make it easier for the model and it still makes mistakes. For example, if the nurse is not specified as "female", the model is not able to determine her gender even though she is explicitly mentioned as "she". Model also is unable to derive from the context that the story most likely happened in some medical facility, and answers "INVALID" to a question if the murder happened inside a building, and so on.
+Be as specific in the provided story as possible. The story above was recreated several times to make it easier for the model and it still makes mistakes. For example, if the nurse is not specified as "female", the model is not able to determine her gender even though she is explicitly mentioned as "she". Model also is unable to derive from the context that the story most likely happened in some medical facility, and answers "INVALID" to a question if the murder happened inside a building. Model tends to answer "YES" to question like "X or Y". And so on.
