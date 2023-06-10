@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "engines": {
+    "node": ">=16"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "dev": "nodemon --exec npx tsx lib/index.ts",
+    "start": "yarn build && node dist/index.js"
+  },
+  "dependencies": {
+    "arcybot": "^1.4.8",
+    "tsc": "^2.0.4",
+    "tsc-alias": "^1.8.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1"
+  }
+}
