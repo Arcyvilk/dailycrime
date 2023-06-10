@@ -50,8 +50,9 @@ export const guess = async (interaction: DiscordInteraction): Promise<void> => {
     embeds: [{
       title: question,
       color,
-      footer: {
-        text:`Asked by <@${interaction.user.id}>`
+      author: {
+        name: interaction.user.username,
+        icon_url: interaction.user.avatarURL() ?? ''
       },
       fields: [
         {
