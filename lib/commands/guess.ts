@@ -1,5 +1,6 @@
 import { APIEmbed, SlashCommandBuilder } from 'discord.js'
 import { DiscordInteraction } from 'arcybot';
+import axios from 'axios';
 
 /**
  * Builder for the GUESS command 
@@ -27,7 +28,12 @@ export const guess = async (interaction: DiscordInteraction): Promise<void> => {
     return;
   }
 
+  const prompt = `${question} (You can answer only YES, NO or INVALID)`
+  const chatId = "c007a585-462c-499c-9ef3-7a1236d39505"
+  const url = `http://localhost:8008/api/chat/${chatId}/question`
+
   await interaction.deferReply();
+  const answer = await axios({url, method: 'GET', params: { prompt }})
 
   // Add the entire logic here
   interaction.editReply({
@@ -40,7 +46,7 @@ export const guess = async (interaction: DiscordInteraction): Promise<void> => {
         },
         {
           name: "Answer",
-          value: "NO"
+          value: answer.data
         },
       ],
     }]
