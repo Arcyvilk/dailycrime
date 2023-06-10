@@ -2,6 +2,9 @@ import { APIEmbed, SlashCommandBuilder } from 'discord.js'
 import { DiscordInteraction } from 'arcybot';
 import axios from 'axios';
 
+import { parseAnswer } from 'utils/parseAnswer';
+import { parseColor } from 'utils/parseColor';
+
 /**
  * Builder for the GUESS command 
  */
@@ -28,25 +31,32 @@ export const guess = async (interaction: DiscordInteraction): Promise<void> => {
     return;
   }
 
-  const prompt = `${question} (You can answer only YES, NO or INVALID)`
-  const chatId = "c007a585-462c-499c-9ef3-7a1236d39505"
+  const prompt = `${question} (Remember: answer [Y] for yes, [N] for no and [I] for invalid questions)`
+  const chatId = "f28d80ac-7fd6-4c1b-9233-e7d49cbbccaa"
   const url = `http://localhost:8008/api/chat/${chatId}/question`
 
   await interaction.deferReply();
-  const answer = await axios({url, method: 'GET', params: { prompt }})
+  const response = await axios({
+    url,
+    method: 'GET',
+    headers: { responseType: 'stream', accept: "text/event-stream" },
+    params: { prompt }
+  })
+  const answer = parseAnswer(response)
+  const color = parseColor(answer)
 
   // Add the entire logic here
   interaction.editReply({
     embeds: [{
-      title: `${interaction.user.username.toUpperCase()} asked a question!`,
+      title: question,
+      color,
+      footer: {
+        text:`Asked by <@${interaction.user.id}>`
+      },
       fields: [
         {
-          name: "Question",
-          value: question
-        },
-        {
           name: "Answer",
-          value: answer.data
+          value: answer
         },
       ],
     }]
